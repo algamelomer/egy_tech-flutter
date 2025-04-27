@@ -1,4 +1,4 @@
-import 'products.dart';
+import 'homedata.dart';
 import 'Vendors.dart';
 
 class ApiResponse<T> {
@@ -50,7 +50,7 @@ class ApiErrorResponse {
 
 class FollowingData {
   final List<ProductList> products;
-  final List<VendorList> vendor;
+  final List<Vendor> vendor;
 
   FollowingData({
     required this.products,
@@ -66,7 +66,7 @@ class FollowingData {
           .map((item) => ProductList.fromJson(item as Map<String, dynamic>))
           .toList(),
       vendor: vendorJson
-          .map((item) => VendorList.fromJson(item as Map<String, dynamic>))
+          .map((item) => Vendor.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
