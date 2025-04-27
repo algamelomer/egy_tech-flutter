@@ -6,16 +6,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   final Size preferredSize; // Preferred size for AppBar
 
-  const CustomAppBar({super.key})
-      : preferredSize = const Size.fromHeight(90);
+  const CustomAppBar({super.key}) : preferredSize = const Size.fromHeight(90);
 
   @override
   Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.background;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
     return SafeArea(
       child: AppBar(
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: background,
         toolbarHeight: 90,
         flexibleSpace: const Padding(
           padding: EdgeInsets.all(8.0),
@@ -43,6 +45,9 @@ class Mainappbar extends StatefulWidget {
 class _MainappbarState extends State<Mainappbar> {
   @override
   Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.background;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -50,19 +55,21 @@ class _MainappbarState extends State<Mainappbar> {
           Constants.IconLogo,
           height: 30,
         ),
-        const SizedBox(
+        SizedBox(
           width: 100,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconWithBadge(
+                  color: primary,
                   icon: Icons.notifications_outlined,
-                  Iconsize: 24,
+                  iconSize: 24,
                   badgeCount: 2),
-              Icon(Icons.favorite_border, size: 24, color: Colors.black),
+              Icon(Icons.favorite_border, size: 24, color: primary),
               IconWithBadge(
+                  color: primary,
                   icon: Icons.shopping_bag_outlined,
-                  Iconsize: 24,
+                  iconSize: 24,
                   badgeCount: 5),
             ],
           ),
@@ -77,10 +84,13 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.background;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
     return Container(
       height: 36,
       decoration: BoxDecoration(
-        color: Colors.grey[200], // Background color similar to image
+        color: secondary, // Background color similar to image
         borderRadius: BorderRadius.circular(8),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),

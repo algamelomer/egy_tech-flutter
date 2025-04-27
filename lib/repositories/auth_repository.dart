@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:my_app/responses/LoginResponse.dart' as login_response;
 import 'package:my_app/responses/RegisterResponse.dart' as register_response;
+import 'package:my_app/responses/UpdateUserResponse.dart'as update_user_response;
+    
 import 'package:my_app/services/authService.dart';
 import 'package:my_app/config/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,8 +12,10 @@ class AuthRepository {
   final DatabaseService _databaseService = DatabaseService();
 
   /// **Login the user and store the token if "Remember Me" is checked**
-  Future<login_response.LoginResponse> login(String email, String password, bool rememberMe) async {
-    final login_response.LoginResponse response = await _authService.login(email, password);
+  Future<login_response.LoginResponse> login(
+      String email, String password, bool rememberMe) async {
+    final login_response.LoginResponse response =
+        await _authService.login(email, password);
 
     if (response.status) {
       // Store the token
@@ -35,14 +39,13 @@ class AuthRepository {
     File? image,
   }) async {
     return await _authService.register(
-      name: name,
-      email: email,
-      password: password,
-      gender: gender,
-      image: image,
-      address: address,
-      phone: phone
-    );
+        name: name,
+        email: email,
+        password: password,
+        gender: gender,
+        image: image,
+        address: address,
+        phone: phone);
   }
 
   /// **Check if a user is logged in**
@@ -59,6 +62,25 @@ class AuthRepository {
     return token != null;
   }
 
+  Future<update_user_response.UpdateUserResponse> updateuser({
+    String? name,
+    String? email,
+    String? password,
+    String? gender,
+    String? phone,
+    String? address,
+    File? image,
+  }) async {
+    return await _authService.updateuser(
+        name: name,
+        email: email,
+        password: password,
+        gender: gender,
+        image: image,
+        address: address,
+        phone: phone);
+  }
+
   /// **Logout the user and remove the token**
   Future<void> logout() async {
     await deleteToken();
@@ -68,6 +90,6 @@ class AuthRepository {
   Future<void> deleteToken() async {
     await _databaseService.deleteToken();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('rememberMe'); 
+    await prefs.remove('rememberMe');
   }
 }

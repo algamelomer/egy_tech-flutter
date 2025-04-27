@@ -20,8 +20,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final homeDataAsync = ref.watch(homeDataProvider);
-
+    final background = Theme.of(context).colorScheme.background;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
     return Scaffold(
+      backgroundColor: background,
       body: homeDataAsync.when(
         data: (apiResponse) {
           //  api getters
@@ -40,13 +43,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           final mappedTrendingCategories = HomeDataMapper.mapTrendingCategories(
               trendingCategories as List<Category>);
 
-          const CustomTextStyle = TextStyle(
-              color: Colors.black,
+          var CustomTextStyle = TextStyle(
+              color: primary,
               fontFamily: 'Satoshi',
               fontSize: 19.2,
               fontWeight: FontWeight.bold);
           return Container(
-            color: Colors.white,
+            color: background,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

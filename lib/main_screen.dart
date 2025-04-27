@@ -1,70 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/providers/theme_provider.dart';
 import 'package:my_app/screens/404.dart';
 import 'package:my_app/screens/Following.dart';
-// import 'package:my_app/screens/MyCollection.dart';
 import 'package:my_app/screens/MyProfile.dart';
-import 'package:my_app/widgets/custom_appbar.dart';
+import 'package:my_app/widgets/nav&footer/custom_appbar.dart';
 import './screens/home.dart';
 import './screens/collaborate_screen.dart';
-import './widgets/custom_bottom_nav.dart';
+import 'widgets/nav&footer/custom_bottom_nav.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   final int index;
-  MainScreen({required this.index});
+  const MainScreen({Key? key, required this.index}) : super(key: key);
 
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  late int _selectedIndex; // The current page index (e.g., 0, 6, etc.)
-  late int _lastMainTabIndex; // The last main tab index (0-3)
+class _MainScreenState extends ConsumerState<MainScreen> {
+  late int _selectedIndex;
+  late int _lastMainTabIndex;
 
-  // List of pages, including main tabs and inner pages
   final List<Widget> _pages = [
-    HomeScreen(), // Index 0: Main tab
-    Placeholder(), // Index 1: Main tab
+    HomeScreen(),
+    Placeholder(),
     NotFoundPage(),
-    CollaborateScreen(), // Index 3: Main tab
+    CollaborateScreen(),
     MyProfile(),
-    Following(), // Index 4: Could be an inner page
-    Placeholder(), // Index 5: Another page
-    // DetailPage(),         // Index 6: Inner/param page
+    Following(),
   ];
 
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.index; // Start with the initial index
-    _lastMainTabIndex =
-        widget.index.clamp(0, 3); // Clamp to main tab range (0-3)
+    _selectedIndex = widget.index;
+    _lastMainTabIndex = widget.index.clamp(0, 3);
   }
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index; // Update the current page
+      _selectedIndex = index;
       if (index >= 0 && index <= 3) {
-        // If it's a main tab
-        _lastMainTabIndex = index; // Update the last main tab
+        _lastMainTabIndex = index;
       }
-      // If index > 3 (e.g., 6), _lastMainTabIndex stays the same
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Watch themeProvider to ensure rebuild on theme changes
+    ref.watch(themeProvider);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBar(),
       body: Padding(
         padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
         child: AnimatedSwitcher(
           duration: Duration(milliseconds: 500),
-          child: _pages[_selectedIndex], // Show the current page
+          child: _pages[_selectedIndex],
         ),
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: _lastMainTabIndex, // Highlight the last main tab
+        selectedIndex: _lastMainTabIndex,
         onItemTapped: _onItemTapped,
       ),
     );

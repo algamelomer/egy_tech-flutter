@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_app/responses/RegisterResponse.dart';
-import 'package:my_app/providers/providers.dart';
+import 'package:my_app/providers/user_provider.dart';
 import 'package:my_app/widgets/LocationPickerDialog.dart';
 
 enum Gender { male, female }

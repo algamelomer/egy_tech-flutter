@@ -1,11 +1,10 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/main_screen.dart';
+import 'package:my_app/providers/theme_provider.dart';
 import 'package:my_app/screens/home.dart';
 import 'package:my_app/screens/profileSettings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:my_app/screens/home.dart';
 import 'package:my_app/screens/login_screen.dart';
 import 'package:my_app/screens/register_screen.dart';
 import 'package:my_app/screens/walkthrough.dart';
@@ -24,33 +23,31 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      // Wrap in ProviderScope for Riverpod
       child: MyApp(walkthroughCompleted: walkthroughCompleted),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   final bool walkthroughCompleted;
   const MyApp({Key? key, required this.walkthroughCompleted}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch themeProvider state to rebuild on theme changes
+    ref.watch(themeProvider);
+    // Access themeData from ThemeNotifier
+    final themeData = ref.read(themeProvider.notifier).themeData;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Login App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-        useMaterial3: true,
-      ),
+      theme: themeData,
       initialRoute: walkthroughCompleted ? '/login' : '/walkthrough',
       routes: {
         '/walkthrough': (context) => const Walkthrough(),
         '/login': (context) => LoginScreen(),
         '/signup': (context) => RegisterScreen(),
-        '/': (context) => MainScreen(
-              index: 0,
-            ),
+        '/': (context) => MainScreen(index: 0),
         '/home': (context) => HomeScreen(),
         '/myprofile': (context) => MyProfile(),
         '/mycollection': (context) => MyCollection(),
@@ -63,13 +60,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/* 
-in order to navigate between pages insed the mainscreen for appbar display and bottom nav
-use this example cmd
-Navigator.push(
-  context,
-  MaterialPageRoute(builder: (context) => MainScreen(index: 2)), //the index is the number of our page builder in the main_screen.dart
-);
-
-*/

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/models/User.dart';
 import 'package:my_app/services/AuthService.dart';
-import 'package:my_app/widgets/custom_bottom_nav.dart';
+import 'package:my_app/widgets/nav&footer/custom_bottom_nav.dart';
 
 class MainScreen extends StatefulWidget {
   @override
