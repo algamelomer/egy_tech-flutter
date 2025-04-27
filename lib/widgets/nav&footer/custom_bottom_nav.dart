@@ -20,16 +20,20 @@ class CustomBottomNavBar extends StatelessWidget {
       Icons.groups,
       Icons.person,
     ];
-
+    final background = Theme.of(context).colorScheme.background;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
     return CurvedNavigationBar(
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 400),
       height: 55,
       index: selectedIndex.clamp(0, icons.length - 1),
       onTap: onItemTapped,
-      backgroundColor: Colors.white,
+      backgroundColor: background,
       color: Colors.red[700]!,
-      items: icons.map((icon) => Icon(icon, color: Colors.white, size: 30)).toList(),
+      items: icons
+          .map((icon) => Icon(icon, color: background, size: 30))
+          .toList(),
     );
   }
 }

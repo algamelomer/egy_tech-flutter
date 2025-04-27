@@ -3,19 +3,23 @@ import 'package:flutter/material.dart';
 class IconWithBadge extends StatelessWidget {
   final IconData icon;
   final int badgeCount;
-  final double Iconsize;
-  const IconWithBadge(
-      {super.key,
-      required this.icon,
-      required this.Iconsize,
-      required this.badgeCount});
+  final double iconSize;
+  final Color color;
+
+  const IconWithBadge({
+    super.key,
+    required this.icon,
+    required this.iconSize,
+    required this.badgeCount,
+    this.color = Colors.black,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Icon(icon, size: Iconsize, color: Colors.black, weight: 1,),
+        Icon(icon, size: iconSize, color: color),
         if (badgeCount > 0)
           Positioned(
             right: -6,

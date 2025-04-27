@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/widgets/custom_bottom_nav.dart';
+import 'package:my_app/widgets/nav&footer/custom_bottom_nav.dart';
 
 void main() {
   runApp(const MyApp());

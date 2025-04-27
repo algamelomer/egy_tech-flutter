@@ -5,6 +5,8 @@ class User {
   final String gender;
   final String? bio;
   final String profilePicture;
+  final String? phone;
+  final String? address;
   final String createdAt;
   final String updatedAt;
 
@@ -15,6 +17,8 @@ class User {
     required this.gender,
     this.bio,
     required this.profilePicture,
+    this.phone,
+    this.address,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -26,7 +30,9 @@ class User {
       email: json['email'],
       gender: json['gender'],
       bio: json['bio'],
-      profilePicture: json['profile_picture'],
+      profilePicture: json['profile_picture'] ?? '',
+      phone: json['phone'],
+      address: json['address'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );

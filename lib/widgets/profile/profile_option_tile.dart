@@ -16,6 +16,9 @@ class ProfileOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.background;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -32,11 +35,11 @@ class ProfileOptionTile extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Satoshi',
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Colors.black,
+                          color: primary,
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -46,11 +49,11 @@ class ProfileOptionTile extends StatelessWidget {
                           subtitle,
                           softWrap: true,
                           overflow: TextOverflow.visible,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Satoshi',
                             fontSize: 11.1,
                             fontWeight: FontWeight.normal,
-                            color: Colors.grey,
+                            color: secondary,
                           ),
                         ),
                       ),
@@ -61,8 +64,8 @@ class ProfileOptionTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 5),
-            const Divider(
-              color: Colors.grey,
+            Divider(
+              color: secondary,
               thickness: 0.5,
               height: 1,
             ),
