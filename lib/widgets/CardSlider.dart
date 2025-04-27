@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/screens/product.dart';
+
 class CardSlider extends StatefulWidget {
   final List<Map<String, String>> Cardlist;
 
@@ -7,6 +9,7 @@ class CardSlider extends StatefulWidget {
   @override
   _CardSliderState createState() => _CardSliderState();
 }
+
 class _CardSliderState extends State<CardSlider> {
   final int maxVisibleDots = 5;
   late final ScrollController _scrollController;
@@ -68,116 +71,130 @@ class _CardSliderState extends State<CardSlider> {
   Widget _buildCard(Map<String, String> product, double containerHeight) {
     // Use the fixed card width defined above.
     double imageHeight = containerHeight - 100;
-    return SizedBox(
-      width: cardWidth,
-      child: Container(
-        margin:
-            const EdgeInsets.only(top: 35, left: 8, right: 8, bottom: 5), // margin = 16 total horizontal
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.grey,
-              blurRadius: 5,
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16)),
-                  child: Image.network(
-                    product["product_image"] ?? "",
-                    height: imageHeight,
-                    width: cardWidth,
-                    fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductScreen(
+                productId: product["product_id"] ?? product["id"] ??
+                    '1'), // Use your actual product ID key
+          ),
+        );
+      },
+      child: SizedBox(
+        width: cardWidth,
+        child: Container(
+          margin: const EdgeInsets.only(
+              top: 35,
+              left: 8,
+              right: 8,
+              bottom: 5), // margin = 16 total horizontal
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 5,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16)),
+                    child: Image.network(
+                      product["product_image"] ?? "",
+                      height: imageHeight,
+                      width: cardWidth,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                if (product["vendor_image"] != null)
-                  Positioned(
-                    top: -30,
-                    left: 0,
-                    right: 0,
-                    child: CircleAvatar(
-                      radius: 35,
-                      backgroundColor: Colors.white,
+                  if (product["vendor_image"] != null)
+                    Positioned(
+                      top: -30,
+                      left: 0,
+                      right: 0,
                       child: CircleAvatar(
-                        radius: 32,
-                        backgroundImage:
-                            NetworkImage(product["vendor_image"] ?? ""),
-                      ),
-                    ),
-                  ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: CircleAvatar(
-                    radius: 14,
-                    backgroundColor:
-                        const Color.fromARGB(214, 158, 158, 158),
-                    child: const Icon(Icons.add,
-                        size: 20, color: Colors.white),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(124, 0, 0, 0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        product["product_name"] ?? "", 
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                        radius: 35,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 32,
+                          backgroundImage:
+                              NetworkImage(product["vendor_image"] ?? ""),
                         ),
                       ),
                     ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: CircleAvatar(
+                      radius: 14,
+                      backgroundColor: const Color.fromARGB(214, 158, 158, 158),
+                      child:
+                          const Icon(Icons.add, size: 20, color: Colors.white),
+                    ),
                   ),
-                )
-              ],
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(16)),
-                  color: Colors.white,
-                ),
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _discountIcon(
-                        discountText: product["discount"] ?? '0%',
-                        IconColor: Colors.red[700] ?? Colors.red,
-                        IconSize: 40,
-                        TextColor: Colors.white,
-                        FontSize: 9),
-                    Text(
-                      "\$${product["price"]}",
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14,
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 40,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(124, 0, 0, 0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          product["product_name"] ?? "",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ),
-                  ],
+                  )
+                ],
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16)),
+                    color: Colors.white,
+                  ),
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _discountIcon(
+                          discountText: product["discount"] ?? '0%',
+                          IconColor: Colors.red[700] ?? Colors.red,
+                          IconSize: 40,
+                          TextColor: Colors.white,
+                          FontSize: 9),
+                      Text(
+                        "\$${product["price"]}",
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

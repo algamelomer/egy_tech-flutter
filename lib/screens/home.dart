@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_app/models/category.dart';
-import 'package:my_app/models/products.dart';
-
+import 'package:my_app/models/Homedata.dart';
 import 'package:my_app/widgets/AdBanner.dart';
 import 'package:my_app/widgets/CardSlider.dart';
 import 'package:my_app/widgets/CustomListView.dart';
@@ -224,6 +222,7 @@ class HomeDataMapper {
   static List<Map<String, String>> mapCategories(List<Category> categories) {
     return categories
         .map((Category cat) => {
+              "id": cat.id.toString(),
               "name": cat.categoryName,
               "image": cat.categoryImage,
             })
@@ -233,6 +232,7 @@ class HomeDataMapper {
   static List<Map<String, String>> mapProducts(List<ProductList> products) {
     return products
         .map((ProductList prod) => {
+              "id": prod.productId.toString(),
               "product_name": prod.productName,
               "product_image": prod.productImage,
               "vendor_image": prod.vendorImage,
@@ -246,6 +246,7 @@ class HomeDataMapper {
       List<ProductList> promotedProducts) {
     return promotedProducts
         .map((ProductList prod) => {
+              "id": prod.productId.toString(),
               "product_name": prod.productName,
               "product_image": prod.productImage,
               "vendor_image": prod.vendorImage,
@@ -262,6 +263,7 @@ class HomeDataMapper {
               "name": cat.categoryName,
               "products": cat.products
                   .map((ProductList prod) => {
+                        "product_id": prod.productId.toString(),
                         "product_name": prod.productName,
                         "product_image": prod.productImage,
                         "price": prod.price,

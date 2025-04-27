@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/models/Vendors.dart';
-import 'package:my_app/models/products.dart';
+import 'package:my_app/models/homedata.dart';
 
 import 'package:my_app/widgets/CustomCardList.dart';
 import 'package:my_app/widgets/CustomListView.dart';
@@ -30,7 +30,7 @@ class _FollowingState extends ConsumerState<Following> {
         final vendor = apiResponse.data.vendor;
 
         final mappedVendor =
-            FollowingDataMapper.mapVendors(vendor as List<VendorList>);
+            FollowingDataMapper.mapVendors(vendor as List<Vendor>);
         final mappedProducts =
             FollowingDataMapper.mapProducts(products as List<ProductList>);
 
@@ -121,9 +121,9 @@ class CustomBanner extends StatelessWidget {
 }
 
 class FollowingDataMapper {
-  static List<Map<String, String>> mapVendors(List<VendorList> vendors) {
+  static List<Map<String, String>> mapVendors(List<Vendor> vendors) {
     return vendors
-        .map((VendorList vendor) => {
+        .map((Vendor vendor) => {
               "name": vendor.brandName,
               "image": vendor.vendorImage,
             })
