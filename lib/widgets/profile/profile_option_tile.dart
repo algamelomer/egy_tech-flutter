@@ -16,7 +16,7 @@ class ProfileOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return InkWell(

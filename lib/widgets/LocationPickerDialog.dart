@@ -1,11 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:my_app/screens/open_street_map_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:geocoding/geocoding.dart';
 
 class LocationPickerDialog extends StatefulWidget {
   const LocationPickerDialog({super.key});
@@ -70,7 +68,7 @@ class _LocationPickerDialogState extends State<LocationPickerDialog> {
               final status = await Permission.location.request();
               if (status.isGranted) {
                 final address = await _getCurrentLocation();
-                if (address != null) Navigator.pop(context, address);
+                Navigator.pop(context, address);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text("Location permission denied")));

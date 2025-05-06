@@ -4,6 +4,8 @@ import 'package:my_app/services/AuthService.dart';
 import 'package:my_app/widgets/nav&footer/custom_bottom_nav.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -46,23 +48,22 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _error != null
               ? Center(child: Text('Error: $_error'))
               : _user == null
-                  ? Center(child: Text('No user data found'))
+                  ? const Center(child: Text('No user data found'))
                   : Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (_user!.profilePicture != null)
-                            CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(_user!.profilePicture!),
-                              radius: 50,
-                            ),
-                          SizedBox(height: 16),
+                          CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(_user!.profilePicture),
+                            radius: 50,
+                          ),
+                          const SizedBox(height: 16),
                           Text('ID: ${_user!.id}'),
                           Text('Name: ${_user!.name}'),
                           Text('Email: ${_user!.email}'),

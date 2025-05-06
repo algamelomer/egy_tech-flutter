@@ -14,7 +14,7 @@ class ProfileSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return Scaffold(
@@ -76,7 +76,7 @@ class ProfileSettings extends ConsumerWidget {
     required VoidCallback onTap,
     Color? color,
   }) {
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return ListTile(
@@ -123,8 +123,8 @@ class ProfileSettings extends ConsumerWidget {
               onPressed: () => Navigator.pop(context), child: Text('Cancel')),
           ElevatedButton(
             onPressed: () => _logout(context, ref),
-            child: Text('Logout'),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red[700]),
+            child: Text('Logout'),
           ),
         ],
       ),

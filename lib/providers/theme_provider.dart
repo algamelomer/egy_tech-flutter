@@ -108,7 +108,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
         print("custom theme");
         return ThemeData.light().copyWith(
           colorScheme: ColorScheme.light(
-            background: state.backgroundColor,
+            surface: state.backgroundColor,
             primary: state.primaryColor,
             secondary: state.secondaryColor,
           ),

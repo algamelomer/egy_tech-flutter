@@ -37,7 +37,7 @@ class MyProfile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userProvider);
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return userState.when(
@@ -166,7 +166,7 @@ class MyProfile extends ConsumerWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          MainScreen(index: 5)),
+                                          const MainScreen(index: 5)),
                                 );
                               },
                             ),
@@ -213,6 +213,16 @@ class MyProfile extends ConsumerWidget {
                               onTap: () {
                                 Navigator.pushNamed(
                                     context, "/profile_settings");
+                              },
+                            ),
+                            ProfileOptionTile(
+                              title: "Profile vendor",
+                              subtitle:
+                                  "عمر فزلك",
+                              icon: Icons.settings,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, "/store_details");
                               },
                             ),
                             ProfileOptionTile(

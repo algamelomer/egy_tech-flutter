@@ -11,7 +11,7 @@ import 'widgets/nav&footer/custom_bottom_nav.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   final int index;
-  const MainScreen({Key? key, required this.index}) : super(key: key);
+  const MainScreen({super.key, required this.index});
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -22,11 +22,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   late int _lastMainTabIndex;
 
   final List<Widget> _pages = [
-    HomeScreen(),
-    Placeholder(),
-    NotFoundPage(),
-    CollaborateScreen(),
-    MyProfile(),
+    const HomeScreen(),
+    const Placeholder(),
+    const NotFoundPage(),
+    const CollaborateScreen(),
+    const MyProfile(),
     Following(),
   ];
 
@@ -51,12 +51,12 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     // Watch themeProvider to ensure rebuild on theme changes
     ref.watch(themeProvider);
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: CustomAppBar(),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: const CustomAppBar(),
       body: Padding(
         padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
         child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           child: _pages[_selectedIndex],
         ),
       ),

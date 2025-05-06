@@ -20,7 +20,7 @@ class CustomBottomNavBar extends StatelessWidget {
       Icons.groups,
       Icons.person,
     ];
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return CurvedNavigationBar(

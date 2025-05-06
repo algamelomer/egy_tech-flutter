@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 // Light theme color scheme
-var lightThemeColorScheme = ColorScheme.light(
-  background: Colors.white,
+var lightThemeColorScheme = const ColorScheme.light(
+  surface: Colors.white,
   primary: Colors.black,
   secondary: Colors.grey,
 );
 
 // Dark theme color scheme
 var darkThemeColorScheme = ColorScheme.dark(
-  background: Colors.grey[900] ?? Colors.grey,
+  surface: Colors.grey[900] ?? Colors.grey,
   primary: Colors.white,
   secondary: Colors.grey[300] ?? Colors.grey,
 );

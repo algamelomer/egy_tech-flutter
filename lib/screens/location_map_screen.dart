@@ -13,8 +13,8 @@ class LocationMapScreen extends StatefulWidget {
 
 class _LocationMapScreenState extends State<LocationMapScreen> {
   LatLng _currentPosition =
-      LatLng(37.7749, -122.4194); 
-  MapController _mapController = MapController();
+      const LatLng(37.7749, -122.4194); 
+  final MapController _mapController = MapController();
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _LocationMapScreenState extends State<LocationMapScreen> {
         children: [
           TileLayer(
             urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
+            subdomains: const ['a', 'b', 'c'],
           ),
           MarkerLayer(
             markers: [

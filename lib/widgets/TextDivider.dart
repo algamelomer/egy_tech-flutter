@@ -8,13 +8,13 @@ class TextWithDividers extends StatelessWidget {
   final double padding;
 
   const TextWithDividers({
-    Key? key,
+    super.key,
     required this.text,
     this.textStyle = const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
     this.dividerColor = Colors.black,
     this.dividerThickness = 2.0,
     this.padding = 8.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

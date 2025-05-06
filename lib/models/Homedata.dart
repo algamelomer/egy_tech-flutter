@@ -79,12 +79,12 @@ class ProductList {
   factory ProductList.fromJson(Map<String, dynamic> json) {
     return ProductList(
       productId: (json['product_id'] ?? json["id"]) as int,
-      productName: json['product_name'].toString() as String,
-      productImage: json['product_image'].toString() as String,
-      vendorImage: json['vendor_image'].toString() as String,
-      price: json['price'].toString() as String,
-      discount: json['discount'].toString() as String,
-      brandName: json['brand_name'].toString() as String,
+      productName: json['product_name'].toString(),
+      productImage: json['product_image'].toString(),
+      vendorImage: json['vendor_image'].toString(),
+      price: json['price'].toString(),
+      discount: json['discount'].toString(),
+      brandName: json['brand_name'].toString(),
       rating: (json['rating'] ?? 0).toInt() as int,
     );
   }
@@ -110,9 +110,9 @@ class Category {
     var productsJson = json['products'] as List? ?? [];
     return Category(
       id: (json['category_id'] ?? json['id']) as int,
-      categoryName: json['category_name'].toString() as String,
-      description: json['description'].toString() as String,
-      categoryImage: json['category_image'].toString() as String,
+      categoryName: json['category_name'].toString(),
+      description: json['description'].toString(),
+      categoryImage: json['category_image'].toString(),
       products: productsJson
           .map((item) => ProductList.fromJson(item as Map<String, dynamic>))
           .toList(),

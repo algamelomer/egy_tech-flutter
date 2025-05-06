@@ -59,7 +59,7 @@ void showThemeBottomSheet(BuildContext context) {
 
 // Stateful dialog for custom theme color selection with Apply button
 class CustomThemeDialog extends ConsumerStatefulWidget {
-  const CustomThemeDialog({Key? key}) : super(key: key);
+  const CustomThemeDialog({super.key});
 
   @override
   _CustomThemeDialogState createState() => _CustomThemeDialogState();

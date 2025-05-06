@@ -23,7 +23,7 @@ extension GenderExtension on Gender {
 }
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
@@ -47,7 +47,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   int _currentStep = 0;
 
   // Validation states
-  bool _isStep1Valid = false;
+  final bool _isStep1Valid = false;
   bool _isStep2Valid = false;
   bool _isStep3Valid = false;
   bool _isStep4Valid = false;
@@ -166,7 +166,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             state: _isStep1Valid ? StepState.complete : StepState.indexed,
             isActive: _currentStep >= 0,
             title: const Text("Getting started"),
-            content: Container(
+            content: SizedBox(
               width: double.infinity,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
