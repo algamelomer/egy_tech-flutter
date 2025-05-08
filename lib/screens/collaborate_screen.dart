@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'package:flutter/services.dart';
 import '../data/dummy_data.dart';
 
 class CollaborateScreen extends StatelessWidget {

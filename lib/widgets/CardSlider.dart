@@ -4,7 +4,7 @@ import 'package:my_app/screens/product.dart';
 class CardSlider extends StatefulWidget {
   final List<Map<String, String>> Cardlist;
 
-  const CardSlider({Key? key, required this.Cardlist}) : super(key: key);
+  const CardSlider({super.key, required this.Cardlist});
 
   @override
   _CardSliderState createState() => _CardSliderState();
@@ -130,14 +130,14 @@ class _CardSliderState extends State<CardSlider> {
                         ),
                       ),
                     ),
-                  Positioned(
+                  const Positioned(
                     top: 8,
                     right: 8,
                     child: CircleAvatar(
                       radius: 14,
-                      backgroundColor: const Color.fromARGB(214, 158, 158, 158),
+                      backgroundColor: Color.fromARGB(214, 158, 158, 158),
                       child:
-                          const Icon(Icons.add, size: 20, color: Colors.white),
+                          Icon(Icons.add, size: 20, color: Colors.white),
                     ),
                   ),
                   Positioned(

@@ -104,7 +104,7 @@ class EditProfileScreen extends ConsumerWidget {
                   builder: (context) => const LocationPickerDialog(),
                 );
                 if (selectedAddress != null && context.mounted) {
-                  print("selectedAddress: " + selectedAddress);
+                  print("selectedAddress: $selectedAddress");
                   try {
                     await ref
                         .read(userProvider.notifier)

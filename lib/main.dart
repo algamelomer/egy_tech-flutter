@@ -4,6 +4,7 @@ import 'package:my_app/main_screen.dart';
 import 'package:my_app/providers/theme_provider.dart';
 import 'package:my_app/screens/home.dart';
 import 'package:my_app/screens/profileSettings.dart';
+import 'package:my_app/screens/store_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_app/screens/login_screen.dart';
 import 'package:my_app/screens/register_screen.dart';
@@ -30,7 +31,7 @@ Future<void> main() async {
 
 class MyApp extends ConsumerWidget {
   final bool walkthroughCompleted;
-  const MyApp({Key? key, required this.walkthroughCompleted}) : super(key: key);
+  const MyApp({super.key, required this.walkthroughCompleted});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,17 +46,18 @@ class MyApp extends ConsumerWidget {
       initialRoute: walkthroughCompleted ? '/login' : '/walkthrough',
       routes: {
         '/walkthrough': (context) => const Walkthrough(),
-        '/login': (context) => LoginScreen(),
-        '/signup': (context) => RegisterScreen(),
-        '/': (context) => MainScreen(index: 0),
-        '/home': (context) => HomeScreen(),
-        '/myprofile': (context) => MyProfile(),
-        '/mycollection': (context) => MyCollection(),
-        '/collaborate': (context) => CollaborateScreen(),
-        '/profile_settings': (context) => ProfileSettings(),
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const RegisterScreen(),
+        '/': (context) => const MainScreen(index: 0),
+        '/home': (context) => const HomeScreen(),
+        '/myprofile': (context) => const MyProfile(),
+        '/mycollection': (context) => const MyCollection(),
+        '/collaborate': (context) => const CollaborateScreen(),
+        '/profile_settings': (context) => const ProfileSettings(),
+        '/store_details': (context) => const StoreDetailsScreen(storeId: 2),
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
-        builder: (context) => NotFoundPage(),
+        builder: (context) => const NotFoundPage(),
       ),
     );
   }

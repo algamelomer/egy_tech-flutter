@@ -8,7 +8,7 @@ import 'package:my_app/config/Constants.dart';
 import 'package:my_app/providers/home_data_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -18,7 +18,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final homeDataAsync = ref.watch(homeDataProvider);
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return Scaffold(
@@ -68,7 +68,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           onPressed: () {
                             Navigator.pushNamed(context, '/notfound');
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             size: 24,
                             Icons.arrow_forward_rounded,
                             color: Colors.black,
@@ -86,7 +86,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           onPressed: () {
                             Navigator.pushNamed(context, '/notfound');
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             size: 24,
                             Icons.arrow_forward_rounded,
                             color: Colors.black,
@@ -115,7 +115,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   onPressed: () {
                                     Navigator.pushNamed(context, '/notfound');
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     size: 24,
                                     Icons.arrow_forward_rounded,
                                     color: Colors.black,

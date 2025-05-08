@@ -66,7 +66,7 @@ class CustomCardList extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    "\$${price}",
+                    "\$$price",
                     style: const TextStyle(color: Colors.grey, fontSize: 11.1),
                   ),
                   const SizedBox(height: 2),

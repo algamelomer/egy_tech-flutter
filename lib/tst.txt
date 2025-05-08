@@ -1,0 +1,1241 @@
+main.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/main_screen.dart';
+import 'package:my_app/providers/theme_provider.dart';
+import 'package:my_app/screens/home.dart';
+import 'package:my_app/screens/profileSettings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my_app/screens/login_screen.dart';
+import 'package:my_app/screens/register_screen.dart';
+import 'package:my_app/screens/walkthrough.dart';
+import 'package:my_app/screens/MyProfile.dart';
+import 'package:my_app/screens/MyCollection.dart';
+import 'package:my_app/screens/collaborate_screen.dart';
+import 'package:my_app/screens/404.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Retrieve walkthrough status from SharedPreferences
+  final prefs = await SharedPreferences.getInstance();
+  final bool walkthroughCompleted =
+      prefs.getBool('walkthroughCompleted') ?? false;
+
+  runApp(
+    ProviderScope(
+      child: MyApp(walkthroughCompleted: walkthroughCompleted),
+    ),
+  );
+}
+
+class MyApp extends ConsumerWidget {
+  final bool walkthroughCompleted;
+  const MyApp({super.key, required this.walkthroughCompleted});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch themeProvider state to rebuild on theme changes
+    ref.watch(themeProvider);
+    // Access themeData from ThemeNotifier
+    final themeData = ref.read(themeProvider.notifier).themeData;
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Login App',
+      theme: themeData,
+      initialRoute: walkthroughCompleted ? '/login' : '/walkthrough',
+      routes: {
+        '/walkthrough': (context) => const Walkthrough(),
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const RegisterScreen(),
+        '/': (context) => const MainScreen(index: 0),
+        '/home': (context) => const HomeScreen(),
+        '/myprofile': (context) => const MyProfile(),
+        '/mycollection': (context) => const MyCollection(),
+        '/collaborate': (context) => const CollaborateScreen(),
+        '/profile_settings': (context) => const ProfileSettings(),
+      },
+      onUnknownRoute: (settings) => MaterialPageRoute(
+        builder: (context) => const NotFoundPage(),
+      ),
+    );
+  }
+}
+-------------------------------------------------------------------------------------
+main_screen.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/providers/theme_provider.dart';
+import 'package:my_app/screens/404.dart';
+import 'package:my_app/screens/Following.dart';
+import 'package:my_app/screens/MyProfile.dart';
+import 'package:my_app/widgets/nav&footer/custom_appbar.dart';
+import './screens/home.dart';
+import './screens/collaborate_screen.dart';
+import 'widgets/nav&footer/custom_bottom_nav.dart';
+
+class MainScreen extends ConsumerStatefulWidget {
+  final int index;
+  const MainScreen({super.key, required this.index});
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends ConsumerState<MainScreen> {
+  late int _selectedIndex;
+  late int _lastMainTabIndex;
+
+  final List<Widget> _pages = [
+    const HomeScreen(),
+    const Placeholder(),
+    const NotFoundPage(),
+    const CollaborateScreen(),
+    const MyProfile(),
+    Following(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.index;
+    _lastMainTabIndex = widget.index.clamp(0, 3);
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (index >= 0 && index <= 3) {
+        _lastMainTabIndex = index;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watch themeProvider to ensure rebuild on theme changes
+    ref.watch(themeProvider);
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: const CustomAppBar(),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: _pages[_selectedIndex],
+        ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: _lastMainTabIndex,
+        onItemTapped: _onItemTapped,
+      ),
+    );
+  }
+}
+----------------------------------------------------------------------------
+
+widgets\nav&footer\custom_appbar.dart
+
+import 'package:flutter/material.dart';
+import 'package:my_app/widgets/IconWithBadge.dart';
+import 'package:my_app/config/Constants.dart';
+
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  @override
+  final Size preferredSize; // Preferred size for AppBar
+
+  const CustomAppBar({super.key}) : preferredSize = const Size.fromHeight(90);
+
+  @override
+  Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.surface;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
+    return SafeArea(
+      child: AppBar(
+        scrolledUnderElevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: background,
+        toolbarHeight: 90,
+        flexibleSpace: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Mainappbar(),
+              SearchBarWidget(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Mainappbar extends StatefulWidget {
+  const Mainappbar({super.key});
+
+  @override
+  State<Mainappbar> createState() => _MainappbarState();
+}
+
+class _MainappbarState extends State<Mainappbar> {
+  @override
+  Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.surface;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Image.asset(
+          Constants.IconLogo,
+          height: 30,
+        ),
+        SizedBox(
+          width: 100,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconWithBadge(
+                  color: primary,
+                  icon: Icons.notifications_outlined,
+                  iconSize: 24,
+                  badgeCount: 2),
+              Icon(Icons.favorite_border, size: 24, color: primary),
+              IconWithBadge(
+                  color: primary,
+                  icon: Icons.shopping_bag_outlined,
+                  iconSize: 24,
+                  badgeCount: 5),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class SearchBarWidget extends StatelessWidget {
+  const SearchBarWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.surface;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
+    return Container(
+      height: 36,
+      decoration: BoxDecoration(
+        color: secondary, // Background color similar to image
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        children: [
+          const Icon(Icons.search, color: Colors.black),
+          const SizedBox(width: 8),
+          const Expanded(
+            child: Center(
+              // Center the TextField vertically
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Search for crafts, products.....",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                  isCollapsed:
+                      true, // Ensures the height is as minimal as possible
+                ),
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.tune, color: Colors.red),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+------------------------------------------------------------------------------------widgets\profileSettings\EditProfileScreen.dart
+
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:my_app/providers/user_provider.dart';
+import 'package:my_app/widgets/LocationPickerDialog.dart';
+
+class EditProfileScreen extends ConsumerWidget {
+  const EditProfileScreen({super.key});
+
+  Future<void> _pickAndUpdateProfilePicture(
+      WidgetRef ref, BuildContext context) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final image = File(pickedFile.path);
+      try {
+        await ref.read(userProvider.notifier).updateuser(image: image);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Profile picture updated successfully')),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to update profile picture: $e')),
+          );
+        }
+      }
+    }
+  }
+
+  void _showEditDialog(
+      BuildContext context, WidgetRef ref, String field, String currentValue) {
+    final controller = TextEditingController(text: currentValue);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Edit $field'),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(labelText: field),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newValue = controller.text;
+              if (newValue.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Field cannot be empty')),
+                );
+                return;
+              }
+              try {
+                final userProviderNotifier = ref.read(userProvider.notifier);
+                if (field == 'Name') {
+                  await userProviderNotifier.updateuser(name: newValue);
+                } else if (field == 'Email') {
+                  await userProviderNotifier.updateuser(email: newValue);
+                } else if (field == 'Address') {
+                  await userProviderNotifier.updateuser(address: newValue);
+                }
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Profile updated successfully')),
+                  );
+                  Navigator.pop(context);
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to update $field: $e')),
+                  );
+                }
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLocationDialog(
+      BuildContext context, WidgetRef ref, String currentAddress) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Address'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                final selectedAddress = await showModalBottomSheet<String>(
+                  context: context,
+                  builder: (context) => const LocationPickerDialog(),
+                );
+                if (selectedAddress != null && context.mounted) {
+                  print("selectedAddress: $selectedAddress");
+                  try {
+                    await ref
+                        .read(userProvider.notifier)
+                        .updateuser(address: selectedAddress);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Address updated successfully')),
+                      );
+                      Navigator.pop(context);
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to update address: $e')),
+                      );
+                    }
+                  }
+                }
+              },
+              child: const Text('Select Location'),
+            ),
+            if (currentAddress.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text('Current: $currentAddress'),
+              ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userState = ref.watch(userProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Edit Profile')),
+      body: userState.when(
+        data: (user) => user == null
+            ? const Center(child: Text('No user data available'))
+            : Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: GestureDetector(
+                        onTap: () => _pickAndUpdateProfilePicture(ref, context),
+                        child: Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 50,
+                              backgroundImage: user.profilePicture.isNotEmpty
+                                  ? NetworkImage(user.profilePicture)
+                                  : const AssetImage(
+                                          'assets/images/default_profile.png')
+                                      as ImageProvider,
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ListTile(
+                      title: const Text('Name',
+                          style: TextStyle(fontWeight: FontWeight.w600)),
+                      subtitle: Text(user.name),
+                      trailing: const Icon(Icons.edit),
+                      onTap: () =>
+                          _showEditDialog(context, ref, 'Name', user.name),
+                    ),
+                    ListTile(
+                      title: const Text('Email',
+                          style: TextStyle(fontWeight: FontWeight.w600)),
+                      subtitle: Text(user.email),
+                      trailing: const Icon(Icons.edit),
+                      onTap: () =>
+                          _showEditDialog(context, ref, 'Email', user.email),
+                    ),
+                    ListTile(
+                      title: const Text('Address',
+                          style: TextStyle(fontWeight: FontWeight.w600)),
+                      subtitle: Text(
+                          user.address != null && user.address!.isNotEmpty
+                              ? user.address!
+                              : 'Not set'),
+                      trailing: const Icon(Icons.edit),
+                      onTap: () =>
+                          _showLocationDialog(context, ref, user.address ?? ''),
+                    ),
+                  ],
+                ),
+              ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(child: Text('Error: $error')),
+      ),
+    );
+  }
+}
+
+---------------------------------------------------------------------------------------
+services\api_service.dart
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:my_app/config/api.dart';
+import 'package:my_app/config/database_service.dart';
+// import 'package:my_app/models/LoginResponse.dart';
+import 'package:my_app/models/User.dart';
+
+class ApiService {
+  final String _baseUrl = ApiConfig.baseUrl;
+final DatabaseService _databaseService = DatabaseService();
+
+  
+  // Helper function to create a Uri
+  Uri _buildUri(String endpoint) {
+    return Uri.parse('$_baseUrl$endpoint');
+  }
+
+  Future<dynamic> getRequest(String endpoint) async {
+    try {
+      var url = _buildUri(endpoint);
+      var response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
+
+
+// Future<LoginResponse> postRequest(String endpoint, Map<String, dynamic> data) async {
+//   try {
+//     var url = _buildUri(endpoint);
+//     var response = await http.post(
+//       url,
+//       headers: {"Content-Type": "application/json"},
+//       body: jsonEncode(data),
+//     );
+
+//     if (response.statusCode == 200 || response.statusCode == 201) {
+//       var responseData = jsonDecode(response.body);
+//       return LoginResponse.fromJson(responseData);
+//     } else {
+//       throw Exception('Request failed with status: ${response.statusCode}');
+//     }
+//   } catch (e) {
+//     throw Exception('Failed to connect to the server: $e');
+//   }
+// }
+
+
+Future<User> fetchUserProfile() async {
+    final token = await _databaseService.getToken();
+    if (token == null) {
+      throw Exception('No token found');
+    }
+    var url = Uri.parse('$_baseUrl/user/profile');
+    var response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", // Include token in headers
+      },
+    );
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load user profile: ${response.statusCode}');
+    }
+  }
+}
+----------------------------------------------------------------------------------
+services\AuthService.dart
+
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:my_app/config/api.dart';
+import 'package:my_app/responses/LoginResponse.dart';
+import 'package:my_app/responses/RegisterResponse.dart';
+import 'package:my_app/responses/UpdateUserResponse.dart';
+import 'package:my_app/config/database_service.dart';
+import 'package:my_app/models/User.dart';
+
+class AuthService {
+  final String _baseUrl = ApiConfig.baseUrl;
+  final DatabaseService _databaseService = DatabaseService();
+
+  Future<LoginResponse> login(String email, String password) async {
+    try {
+      var url = Uri.parse('$_baseUrl/login');
+      var response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+        }),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final loginResponse = LoginResponse.fromJson(jsonDecode(response.body));
+        print(loginResponse.token);
+        await _databaseService.deleteToken(); // Delete existing token
+        await _databaseService.saveToken(loginResponse.token); // Save token
+        return loginResponse;
+      } else if (response.statusCode == 405) {
+        // Handle 405: Invalid token or permissions issue
+        await _databaseService.deleteToken(); // Delete invalid token
+        throw Exception('Token is invalid or expired, please log in again.');
+      } else {
+        throw Exception('Login failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
+
+  Future<RegisterResponse> register({
+    required String name,
+    required String email,
+    required String password,
+    required String gender,
+    required String phone,
+    required String address,
+    File? image,
+  }) async {
+    try {
+      var url = Uri.parse('$_baseUrl/register');
+      var request = http.MultipartRequest('POST', url);
+      request.fields['name'] = name;
+      request.fields['email'] = email;
+      request.fields['password'] = password;
+      request.fields['gender'] = gender;
+      request.fields['phone'] = phone;
+      request.fields['address'] = address;
+
+      if (image != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'profile_picture',
+            image.path,
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        );
+      }
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final registerResponse =
+            RegisterResponse.fromJson(jsonDecode(responseData));
+        await _databaseService.saveToken(registerResponse.token);
+        return registerResponse;
+      } else if (response.statusCode == 405) {
+        await _databaseService.deleteToken(); // Delete invalid token
+        throw Exception('Token is invalid or expired, please log in again.');
+      } else {
+        throw Exception(
+            'Registration failed: ${response.statusCode} - $responseData');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
+
+  Future<User> fetchUser() async {
+    try {
+      // Retrieve the token from the database
+      final token = await _databaseService.getToken();
+      if (token == null) {
+        throw Exception('No token found');
+      }
+
+      // Make the API request to fetch user data
+      var url = Uri.parse('$_baseUrl/user');
+      var response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final userData = jsonDecode(response.body);
+        return User.fromJson(userData['data']);
+      } else if (response.statusCode == 405) {
+        await _databaseService.deleteToken();
+        throw Exception('Token is invalid or expired, please log in again.');
+      } else {
+        throw Exception('Failed to fetch user data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
+
+  Future<UpdateUserResponse> updateuser({
+    String? name,
+    String? email,
+    String? password,
+    String? gender,
+    String? phone,
+    String? address,
+    File? image,
+    String? password_confirmation,
+  }) async {
+    try {
+      final token = await _databaseService.getToken();
+      if (token == null) {
+        throw Exception('User not authenticated');
+      }
+
+      var url = Uri.parse('$_baseUrl/users/update');
+      var request = http.MultipartRequest('POST', url);
+
+      // Add headers
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // Add non-null fields to the request
+      if (name != null) request.fields['name'] = name;
+      if (email != null) request.fields['email'] = email;
+      if (password != null) request.fields['password'] = password;
+      if (password_confirmation != null) request.fields['password_confirmation'] = password_confirmation;
+      if (gender != null) request.fields['gender'] = gender;
+      if (phone != null) request.fields['phone'] = phone;
+      if (address != null) request.fields['address'] = address;
+
+      // Add image file if present
+      if (image != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'profile_picture',
+            image.path,
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        );
+      }
+
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final updateResponse =
+            UpdateUserResponse.fromJson(jsonDecode(responseData));
+        // Update token if new one is provided in response
+        // if (updateResponse.token != null) {
+        //   await _databaseService.saveToken(updateResponse.token!);
+        // }
+        return updateResponse;
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        await _databaseService.deleteToken();
+        throw Exception('Session expired, please log in again.');
+      } else {
+        throw Exception(
+            'Update failed: ${response.statusCode} - $responseData');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
+}
+
+----------------------------------------------------------------------------
+providers\products_data_provider.dart
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/repositories/product_repository.dart';
+
+final apiRepositoryProvider = Provider<ProductRepository>((ref) => ProductRepository());
+
+final ProductDataProvider = FutureProvider.family<ApiResponse, String>((ref, id) async {
+  final repository = ref.watch(apiRepositoryProvider);
+  return repository.getProductById(id);
+});
+
+--------------------------------------------------------------------------------
+providers\home_data_provider.dart
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/repositories/home_repository.dart';
+import 'package:my_app/models/Homedata.dart';
+
+final apiRepositoryProvider = Provider<HomeRepository>((ref) => HomeRepository());
+
+final homeDataProvider = FutureProvider<ApiResponse>((ref) async {
+  final repository = ref.watch(apiRepositoryProvider);
+  return repository.fetchHomeData();
+});
+
+---------------------------------------------------------------------------------
+providers\user_provider.dart
+
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/models/User.dart';
+import 'package:my_app/repositories/auth_repository.dart';
+import 'package:my_app/responses/UpdateUserResponse.dart'
+    as update_user_response;
+import 'package:my_app/services/AuthService.dart';
+
+// Provider for AuthRepository
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return AuthRepository();
+});
+
+// Provider for AuthService
+final authServiceProvider = Provider<AuthService>((ref) {
+  return AuthService();
+});
+
+// Notifier to manage User state
+class UserStateNotifier extends StateNotifier<AsyncValue<User?>> {
+  final AuthService _authService;
+  final Ref _ref;
+  UserStateNotifier(this._authService, this._ref)
+      : super(const AsyncValue.data(null)) {
+    fetchUser();
+  }
+
+  // Fetch user data
+  Future<void> fetchUser() async {
+    state = const AsyncValue.loading();
+    try {
+      final user = await _authService.fetchUser();
+      state = AsyncValue.data(user);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
+
+  Future<update_user_response.UpdateUserResponse> updateuser({
+    String? name,
+    String? email,
+    String? password,
+    String? gender,
+    String? phone,
+    String? address,
+    String? password_confirmation,
+    File? image,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      final updateResponse = await _authService.updateuser(
+        name: name,
+        email: email,
+        password: password,
+        password_confirmation: password_confirmation,
+        gender: gender,
+        phone: phone,
+        address: address,
+        image: image,
+      );
+      final updatedUser = await _authService.fetchUser();
+      state = AsyncValue.data(updatedUser);
+      return updateResponse;
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+      rethrow;
+    }
+  }
+
+  // Clear user data (e.g., on logout)
+  void clearUser() {
+    state = const AsyncValue.data(null);
+  }
+
+  Future<void> logout(BuildContext context) async {
+    state = const AsyncValue.loading();
+    try {
+      final authRepository = _ref.read(authRepositoryProvider);
+      await authRepository.logout();
+      state = const AsyncValue.data(null);
+      _ref.read(authStateProvider.notifier).state = false;
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Logged out successfully')),
+      );
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+      rethrow;
+    }
+  }
+}
+
+// Provider for UserStateNotifier
+final userProvider =
+    StateNotifierProvider<UserStateNotifier, AsyncValue<User?>>((ref) {
+  final authService = ref.watch(authServiceProvider);
+  return UserStateNotifier(authService, ref);
+});
+
+// Provider to check if user is logged in
+final userLoggedInProvider = FutureProvider<bool>((ref) async {
+  final authRepo = ref.watch(authRepositoryProvider);
+  return await authRepo.isUserLoggedIn();
+});
+
+// Example StateProvider to hold authentication state (logged in or not)
+final authStateProvider = StateProvider<bool>((ref) => false);
+--------------------------------------------------------------------
+models\Homedata.dart
+
+class ApiResponse<T> {
+  final bool status;
+  final T data;
+
+  ApiResponse({
+    required this.status,
+    required this.data,
+  });
+
+  factory ApiResponse.fromJson(
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic> json) fromJsonT,
+  ) {
+    return ApiResponse<T>(
+      status: json['status'] as bool,
+      data: fromJsonT(json['data'] as Map<String, dynamic>),
+    );
+  }
+}
+
+class HomeData {
+  final List<ProductList> mostDemanded;
+  final List<Category> trendingCategories;
+  final List<ProductList> promotedProducts;
+
+  final List<Category> categories;
+
+  HomeData(
+      {required this.mostDemanded,
+      required this.categories,
+      this.trendingCategories = const [],
+      required this.promotedProducts});
+
+  factory HomeData.fromJson(Map<String, dynamic> json) {
+    var mostDemandedJson = json['most_demanded'] as List? ?? [];
+    var categoriesJson = json['categories'] as List? ?? [];
+    var trendingCategoriesJson = json['trending_categories'] as List? ?? [];
+    var promotedProductsJson = json['promoted_products'] as List? ?? [];
+    return HomeData(
+      mostDemanded: mostDemandedJson
+          .map((item) => ProductList.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      categories: categoriesJson
+          .map((item) => Category.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      trendingCategories: trendingCategoriesJson
+          .map((item) => Category.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      promotedProducts: promotedProductsJson
+          .map((item) => ProductList.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
+
+// product list for home page
+
+class ProductList {
+  final int productId;
+  final String productName;
+  final String productImage;
+  final String vendorImage;
+  final String price;
+  final String discount;
+  final String brandName;
+  final int rating;
+
+  ProductList({
+    this.productId = 0,
+    this.productName = '',
+    this.productImage = '',
+    this.vendorImage = '',
+    this.price = '',
+    this.discount = '',
+    this.brandName = '',
+    this.rating = 0,
+  });
+
+  factory ProductList.fromJson(Map<String, dynamic> json) {
+    return ProductList(
+      productId: (json['product_id'] ?? json["id"]) as int,
+      productName: json['product_name'].toString(),
+      productImage: json['product_image'].toString(),
+      vendorImage: json['vendor_image'].toString(),
+      price: json['price'].toString(),
+      discount: json['discount'].toString(),
+      brandName: json['brand_name'].toString(),
+      rating: (json['rating'] ?? 0).toInt() as int,
+    );
+  }
+}
+
+// category model for home page
+class Category {
+  final int id;
+  final String categoryName;
+  final String description;
+  final String categoryImage;
+  final List<ProductList> products;
+
+  Category({
+    this.id = 0,
+    this.categoryName = '',
+    this.description = '',
+    this.categoryImage = '',
+    this.products = const <ProductList>[],
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    var productsJson = json['products'] as List? ?? [];
+    return Category(
+      id: (json['category_id'] ?? json['id']) as int,
+      categoryName: json['category_name'].toString(),
+      description: json['description'].toString(),
+      categoryImage: json['category_image'].toString(),
+      products: productsJson
+          .map((item) => ProductList.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
+
+-----------------------------------------------------------------------
+models\Vendors.dart
+
+// ignore_for_file: unnecessary_cast
+
+class Vendor {
+  final int vendorId;
+  final String brandName;
+  final String vendorImage;
+  final String description;
+  final String phone;
+  final String status;
+  final List<Region> regions;
+  final String createdAt;
+  final String updatedAt;
+
+  Vendor({
+    this.vendorId = 0,
+    this.brandName = '',
+    this.vendorImage = '',
+    this.description = '',
+    this.phone = '',
+    this.status = '',
+    this.regions = const [],
+    this.createdAt = '',
+    this.updatedAt = '',
+  });
+
+  factory Vendor.fromJson(Map<String, dynamic> json) {
+    return Vendor(
+      vendorId: json['vendor_id'] ?? json['id'] ?? 0,
+      brandName: json['brand_name']?.toString() ?? '',
+      vendorImage: json['vendor_image']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      phone: json['phone']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
+      createdAt: json['created_at']?.toString() ?? '',
+      updatedAt: json['updated_at']?.toString() ?? '',
+      regions: (json['regions'] as List<dynamic>? ?? [])
+          .map((region) => Region.fromJson(region))
+          .toList(),
+    );
+  }
+}
+
+// region model for vendor page
+
+class Region {
+  final int id;
+  final String name;
+  final int vendorId;
+  final int regionId;
+  final int deliveryCost;
+  final int discount;
+  final String description;
+
+  Region({
+    this.id = 0,
+    this.name = '',
+    this.vendorId = 0,
+    this.regionId = 0,
+    this.deliveryCost = 0,
+    this.discount = 0,
+    this.description = '',
+  });
+
+  factory Region.fromJson(Map<String, dynamic> json) {
+    return Region(
+      id: json['id'] ?? 0,
+      name: json['name']?.toString() ?? '',
+      vendorId: json['vendor_id'] ?? 0,
+      regionId: json['region_id'] ?? 0,
+      deliveryCost: json['delivery_cost'] ?? 0,
+      discount: json['discount'] ?? 0,
+      description: json['description']?.toString() ?? '',
+    );
+  }
+}
+
+---------------------------------------------------------------------
+config\api.dart
+class ApiConfig {
+  static const String baseUrl = "https://handmade.omeralgamel.xyz/index.php/api";
+}
+-----------------------------------------------------------------------
+config\database_service.dart
+
+import 'dart:async';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:path/path.dart';
+
+class DatabaseService {
+  static final DatabaseService _instance = DatabaseService._internal();
+  factory DatabaseService() => _instance;
+
+  static Database? _database;
+
+  DatabaseService._internal();
+
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
+  }
+
+  Future<Database> _initDatabase() async {
+    // Initialize FFI for non-mobile platforms
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
+
+    // Get the path for the database
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, "auth.db");
+
+    // Open the database
+    return await openDatabase(
+      path,
+      version: 2, // Incremented version
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+    );
+  }
+
+  Future<void> _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE Tokens (
+        token TEXT NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE Themes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        themeMode TEXT NOT NULL,
+        backgroundColor INTEGER,
+        primaryColor INTEGER,
+        secondaryColor INTEGER
+      )
+    ''');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+        CREATE TABLE Themes (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          themeMode TEXT NOT NULL,
+          backgroundColor INTEGER,
+          primaryColor INTEGER,
+          secondaryColor INTEGER
+        )
+      ''');
+    }
+  }
+
+  // Token methods
+  Future<void> saveToken(String token) async {
+    final db = await database;
+    await db.insert(
+      'Tokens',
+      {'token': token},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<String?> getToken() async {
+    final db = await database;
+    List<Map<String, dynamic>> results = await db.query('Tokens', limit: 1);
+    return results.isNotEmpty ? results.first['token'] as String? : null;
+  }
+
+  Future<void> deleteToken() async {
+    final db = await database;
+    await db.delete('Tokens');
+  }
+
+  // Theme methods
+Future<void> saveTheme({
+  required String themeMode,
+  int? backgroundColor,
+  int? primaryColor,
+  int? secondaryColor,
+}) async {
+  final db = await database;
+  // Clear existing themes before saving new one
+  await db.delete('Themes');
+  await db.insert(
+    'Themes',
+    {
+      'themeMode': themeMode,
+      'backgroundColor': backgroundColor,
+      'primaryColor': primaryColor,
+      'secondaryColor': secondaryColor,
+    },
+  );
+}
+
+  Future<Map<String, dynamic>?> getTheme() async {
+    final db = await database;
+    List<Map<String, dynamic>> results = await db.query('Themes', limit: 1);
+    print('Loaded theme: $results');
+    return results.isNotEmpty ? results.first : null;
+  }
+
+  Future<void> deleteTheme() async {
+    final db = await database;
+    await db.delete('Themes');
+  }
+}
+
+

@@ -12,7 +12,7 @@ class CustomListView extends StatelessWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.symmetric(vertical: 5),
         itemCount: list.length * 2,
         itemBuilder: (context, index) {
           final data = list[index % list.length];

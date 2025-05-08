@@ -8,7 +8,7 @@ class ProductRepository {
   final String endpoint = '/product';
 
   Future<ApiResponse<Product>> getProductById(id) async {
-    final response = await http.get(Uri.parse(_baseUrl + endpoint + '/$id'));
+    final response = await http.get(Uri.parse('$_baseUrl$endpoint/$id'));
     if (response.statusCode == 200) {
       final jsonMap = jsonDecode(response.body) as Map<String, dynamic>;
       return ApiResponse<Product>.fromJson(jsonMap, Product.fromJson);

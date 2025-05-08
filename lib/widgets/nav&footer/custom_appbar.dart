@@ -10,7 +10,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return SafeArea(
@@ -45,7 +45,7 @@ class Mainappbar extends StatefulWidget {
 class _MainappbarState extends State<Mainappbar> {
   @override
   Widget build(BuildContext context) {
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return Row(
@@ -84,7 +84,7 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background = Theme.of(context).colorScheme.background;
+    final background = Theme.of(context).colorScheme.surface;
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     return Container(

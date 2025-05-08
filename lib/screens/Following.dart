@@ -9,7 +9,7 @@ import 'package:my_app/widgets/CustomListView.dart';
 import 'package:my_app/providers/following_data_provider.dart';
 
 class Following extends ConsumerStatefulWidget {
-  Following({super.key});
+  const Following({super.key});
 
   @override
   ConsumerState<Following> createState() => _FollowingState();
@@ -24,7 +24,7 @@ class _FollowingState extends ConsumerState<Following> {
         body: followingDataAsync.when(
       data: (apiResponse) {
         if (!apiResponse.status) {
-          return Text("please sign in");
+          return const Text("please sign in");
         }
         final products = apiResponse.data.products;
         final vendor = apiResponse.data.vendor;
@@ -40,13 +40,13 @@ class _FollowingState extends ConsumerState<Following> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomBanner(),
-                SizedBox(height: 20),
+                const CustomBanner(),
+                const SizedBox(height: 20),
                 CustomListView(list: mappedVendor),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ListView.builder(
                   physics:
-                      NeverScrollableScrollPhysics(), // Prevent nested scrolling
+                      const NeverScrollableScrollPhysics(), // Prevent nested scrolling
                   shrinkWrap: true, // Ensure it takes only the needed space
                   padding: const EdgeInsets.all(10),
                   itemCount: mappedProducts.length,
