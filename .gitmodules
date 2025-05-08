@@ -1,0 +1,6 @@
+[submodule "flutter"]
+	path = flutter
+	url = https://github.com/algamelomer/egy_tech-flutter.git
+[submodule "backend"]
+	path = backend
+	url = https://github.com/algamelomer/egy_tech-flutter.git
