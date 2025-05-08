@@ -13,8 +13,6 @@ class CollaborateScreen extends StatelessWidget {
       body: Stack(
         children: [
           _buildScrollableContent(context, screenSize),
-          _buildTopNavBar(screenSize.width),
-          _buildBottomNavBar(screenSize.width),
         ],
       ),
     );
@@ -192,89 +190,6 @@ class CollaborateScreen extends StatelessWidget {
         text,
         style: style,
         textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Widget _buildTopNavBar(double width) {
-    return Positioned(
-      top: 0,
-      child: Container(
-        width: width,
-        height: 88,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.8),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('9:41',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                const Text('Collaborate', style: TextStyle(fontSize: 18)),
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Bottom navigation bar
-  Widget _buildBottomNavBar(double width) {
-    return Positioned(
-      bottom: 0,
-      child: Container(
-        width: width,
-        height: 83,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.8),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: DummyData.navItems.map((item) {
-              return _buildAnimatedNavItem(item);
-            }).toList(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAnimatedNavItem(Map<String, dynamic> item) {
-    return TweenAnimationBuilder(
-      tween: Tween<double>(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 500),
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: value,
-          child: Transform.translate(
-            offset: Offset(0, (1 - value) * 10),
-            child: child,
-          ),
-        );
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(item['icon']),
-            onPressed: () {},
-          ),
-          Text(
-            item['label'],
-            style: const TextStyle(fontSize: 10),
-          ),
-        ],
       ),
     );
   }
