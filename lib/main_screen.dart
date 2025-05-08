@@ -4,6 +4,8 @@ import 'package:my_app/providers/theme_provider.dart';
 import 'package:my_app/screens/404.dart';
 import 'package:my_app/screens/Following.dart';
 import 'package:my_app/screens/MyProfile.dart';
+import 'package:my_app/screens/studio_screen.dart';
+
 import 'package:my_app/widgets/nav&footer/custom_appbar.dart';
 import './screens/home.dart';
 import './screens/collaborate_screen.dart';
@@ -24,7 +26,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   final List<Widget> _pages = [
     HomeScreen(),
     Placeholder(),
-    NotFoundPage(),
+    StudioScreen(),
     CollaborateScreen(),
     MyProfile(),
     Following(),

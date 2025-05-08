@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/widgets/nav&footer/custom_bottom_nav.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,14 +21,14 @@ class StudioScreen extends StatelessWidget {
 
   List<Map<String, String>> getCrafts() {
     return [
-      {"name": "Pichwai Art", "image": "assets/pc1.jpg"},
-      {"name": "Khavda Pottery", "image": "assets/pc2.jpg"},
-      {"name": "Dabu Printing", "image": "assets/pc3.jpg"},
+      {"name": "Pichwai Art", "image": "assets/images/pc1.jpg"},
+      {"name": "Khavda Pottery", "image": "assets/images/pc2.jpg"},
+      {"name": "Dabu Printing", "image": "assets/images/pc3.jpg"},
     ];
   }
 
   String getMainImage() {
-    return "assets/general.jpg";
+    return "assets/images/general.jpg";
   }
 
   @override
@@ -37,16 +36,6 @@ class StudioScreen extends StatelessWidget {
     final crafts = getCrafts(); 
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text("Studio", style: TextStyle(color: Colors.black)),
-        centerTitle: false,
-        actions: [
-          IconButton(icon: const Icon(Icons.favorite_border, color: Colors.black), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.shopping_bag_outlined, color: Colors.black), onPressed: () {}),
-        ],
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -167,12 +156,6 @@ class StudioScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-
-      //  Bottom Navigation Bar 
-  bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 2,
-        onItemTapped: (index) {},
       ),
     );
   }
