@@ -27,10 +27,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     const HomeScreen(),
     const Placeholder(),
-    const NotFoundPage(),
+    const StudioScreen(),
     const CollaborateScreen(),
     const MyProfile(),
-    Following(),
+    const Following(),
   ];
 
   @override

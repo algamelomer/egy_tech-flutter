@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/main_screen.dart';
 import 'package:my_app/providers/theme_provider.dart';
+import 'package:my_app/screens/Following.dart';
 import 'package:my_app/screens/home.dart';
 import 'package:my_app/screens/profileSettings.dart';
 import 'package:my_app/screens/store_details_screen.dart';
@@ -54,6 +55,7 @@ class MyApp extends ConsumerWidget {
         '/mycollection': (context) => const MyCollection(),
         '/collaborate': (context) => const CollaborateScreen(),
         '/profile_settings': (context) => const ProfileSettings(),
+        '/following': (context) => const Following(),
         '/store_details': (context) => const StoreDetailsScreen(storeId: 2),
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
