@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/models/Homedata.dart';
+import 'package:my_app/screens/CategoryScreen.dart';
 import 'package:my_app/widgets/AdBanner.dart';
 import 'package:my_app/widgets/CardSlider.dart';
 import 'package:my_app/widgets/CustomListView.dart';
@@ -52,7 +53,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomListView(list: mappedCategories),
+                  CustomListView(
+                    list: mappedCategories,
+                    onTap: (index) {
+                      final categoryId =
+                          int.tryParse(mappedCategories[index]['id'] ?? '0') ??
+                              0;
+                      if (categoryId != 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CategoryScreen(categoryId: categoryId),
+                          ),
+                        );
+                      }
+                    },
+                  ),
                   const SizedBox(height: 20),
                   const AdBanner(),
                   const SizedBox(height: 20),

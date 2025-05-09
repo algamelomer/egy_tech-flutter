@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/providers/theme_provider.dart';
-import 'package:my_app/screens/404.dart';
 import 'package:my_app/screens/Following.dart';
 import 'package:my_app/screens/MyProfile.dart';
 import 'package:my_app/screens/studio_screen.dart';
