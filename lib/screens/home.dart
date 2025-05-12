@@ -63,6 +63,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text("معرض ابداع وابتكار جامعة برج العرب", style: CustomTextStyle),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/notfound');
+                          },
+                          icon: const Icon(
+                            size: 24,
+                            Icons.arrow_forward_rounded,
+                            color: Colors.black,
+                          ))
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  CardSlider(Cardlist: mappedPromotedProducts),
+                  const SizedBox(height: 20),
+                  // Promoted products
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Text("Promoted products", style: CustomTextStyle),
                       IconButton(
                           onPressed: () {
@@ -96,7 +115,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const SizedBox(height: 15),
                   CardSlider(Cardlist: mappedProducts),
                   const SizedBox(height: 20),
-            
+
                   // categories loop
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
