@@ -6,6 +6,7 @@
 - **For sellers**: Difficulty in marketing and promoting their handmade work.
 - **For buyers**: Struggling to find unique, handcrafted products at affordable prices.
 
+
 With this application, artisans can showcase their creations, reach a wider audience, and manage sales, while buyers can browse, filter, and purchase personalized handmade items.
 
 🔗 **UI/UX Design Prototype**: [Figma File](https://www.figma.com/design/tS4CHRDGdDVWxxklB7e6aa/Handmade-Hive-Prototype-(Copy)?node-id=1-2117&t=NA1DrAdoZQY826Rc-0)
@@ -162,4 +163,3 @@ If you have any questions, issues, or suggestions, feel free to open an issue on
 ## 📜 License
 
 This project is licensed under the MIT License – see the [LICENSE.md](LICENSE.md) file for details.
-```
