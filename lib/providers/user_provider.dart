@@ -9,7 +9,7 @@ import 'package:my_app/services/AuthService.dart';
 
 // Provider for AuthRepository
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository();
+  return AuthRepository(ref);
 });
 
 // Provider for AuthService
@@ -68,6 +68,10 @@ class UserStateNotifier extends StateNotifier<AsyncValue<User?>> {
     }
   }
 
+  Future<void> refreshUser() async {
+    await fetchUser();
+  }
+
   // Clear user data (e.g., on logout)
   void clearUser() {
     state = const AsyncValue.data(null);
@@ -80,6 +84,7 @@ class UserStateNotifier extends StateNotifier<AsyncValue<User?>> {
       await authRepository.logout();
       state = const AsyncValue.data(null);
       _ref.read(authStateProvider.notifier).state = false;
+      // await Future.delayed(const Duration(milliseconds: 500));
       Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Logged out successfully')),
@@ -98,7 +103,6 @@ final userProvider =
   return UserStateNotifier(authService, ref);
 });
 
-// Provider to check if user is logged in
 final userLoggedInProvider = FutureProvider<bool>((ref) async {
   final authRepo = ref.watch(authRepositoryProvider);
   return await authRepo.isUserLoggedIn();

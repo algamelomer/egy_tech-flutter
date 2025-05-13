@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/models/Vendors.dart';
 import 'package:my_app/models/homedata.dart';
+import 'package:my_app/screens/product.dart';
+import 'package:my_app/screens/store_details_screen.dart';
 
 import 'package:my_app/widgets/CustomCardList.dart';
 import 'package:my_app/widgets/CustomListView.dart';
@@ -42,29 +44,64 @@ class _FollowingState extends ConsumerState<Following> {
               children: [
                 const CustomBanner(),
                 const SizedBox(height: 20),
-                CustomListView(list: mappedVendor),
+
+                // Display vendor information once
+                CustomListView(
+                  list: mappedVendor,
+                  onTap: (index) {
+                    final vendorId =
+                        int.tryParse(mappedVendor[index]['id'] ?? '0') ?? 0;
+
+                    if (vendorId != 0) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => StoreDetailsScreen(
+                            storeId: vendorId,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+
                 const SizedBox(height: 20),
+
+                // Render products without vendor data duplication
                 ListView.builder(
-                  physics:
-                      const NeverScrollableScrollPhysics(), // Prevent nested scrolling
-                  shrinkWrap: true, // Ensure it takes only the needed space
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
                   padding: const EdgeInsets.all(10),
                   itemCount: mappedProducts.length,
                   itemBuilder: (context, index) {
                     final item = mappedProducts[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
-                      child: CustomCardList(
-                        imageUrl: item["product_image"] as String? ?? '',
-                        title: item["product_name"] as String? ?? '',
-                        price: item["price"]?.toString() ?? 'no price listed',
-                        vendorImageUrl: item["vendor_image"] as String? ?? '',
-                        vendorName: item["vendorName"] as String? ?? '',
-                        location: item["location"] as String? ?? '',
-                        rating:
-                            int.tryParse(item["rating"]?.toString() ?? '0') ??
-                                0,
-                        discountText: item["discount"] as String? ?? '',
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigate to ProductScreen on tap
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductScreen(
+                                productId:
+                                    item["product_id"]?.toString() ?? '1',
+                              ),
+                            ),
+                          );
+                        },
+                        child: CustomCardList(
+                          imageUrl: item["product_image"] as String? ?? '',
+                          title: item["product_name"] as String? ?? '',
+                          price: item["price"]?.toString() ?? 'no price listed',
+                          vendorImageUrl: item["vendor_image"] as String? ?? '',
+                          vendorName: item["vendorName"] as String? ?? '',
+                          location: item["location"] as String? ?? '',
+                          rating:
+                              int.tryParse(item["rating"]?.toString() ?? '0') ??
+                                  0,
+                          discountText: item["discount"] as String? ?? '',
+                        ),
                       ),
                     );
                   },
@@ -126,6 +163,7 @@ class FollowingDataMapper {
         .map((Vendor vendor) => {
               "name": vendor.brandName,
               "image": vendor.vendorImage,
+              "id": vendor.vendorId.toString(),
             })
         .toList();
   }
@@ -133,6 +171,7 @@ class FollowingDataMapper {
   static List<Map<String, Object>> mapProducts(List<ProductList> products) {
     return products
         .map((ProductList prod) => {
+              "product_id": prod.productId.toString(),
               "product_name": prod.productName,
               "product_image": prod.productImage,
               "vendor_image": prod.vendorImage,

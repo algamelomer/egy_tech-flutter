@@ -1,4 +1,3 @@
-// repositories/category_repository.dart
 import 'package:my_app/services/category_service.dart';
 import 'package:my_app/models/Category.dart';
 
@@ -7,5 +6,9 @@ class CategoryRepository {
 
   Future<List<CategoryProduct>> getCategoryProducts(int categoryId) async {
     return await _categoryService.getCategoryProducts(categoryId);
+  }
+
+  Future<List<Category>> getCategories() async {
+    return await _categoryService.getCategories();
   }
 }

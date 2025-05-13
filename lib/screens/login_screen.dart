@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:my_app/providers/user_provider.dart';
+import 'package:my_app/responses/LoginResponse.dart';
+import 'package:my_app/providers/user_provider.dart'; 
 import 'package:my_app/widgets/TextDivider.dart';
 
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -33,9 +36,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() {
       isChecked = prefs.getBool('rememberMe') ?? false;
     });
-    // Use Riverpod to check if user is logged in
-    final isLoggedIn = await ref.read(userLoggedInProvider.future);
-    if (isLoggedIn) {
+    // Use Riverpod to read the AuthRepository provider.
+    final authRepository = ref.read(authRepositoryProvider);
+    bool hasSession = await authRepository.isUserLoggedIn();
+    if (hasSession) {
       Navigator.pushReplacementNamed(context, '/');
     } else {
       setState(() {
@@ -45,26 +49,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _login() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+    String email = _emailController.text;
+    String password = _passwordController.text;
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
       );
       return;
     }
-
     setState(() {
       _isLoading = true;
     });
-
     try {
       final authRepository = ref.read(authRepositoryProvider);
-      final response = await authRepository.login(email, password, isChecked);
+      LoginResponse response = await authRepository.login(email, password, isChecked);
       if (response.status) {
-        // Trigger user fetch to update userProvider state
-        await ref.read(userProvider.notifier).fetchUser();
-        Navigator.pushReplacementNamed(context, '/');
+        Navigator.pushNamed(context, '/');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login successful')),
         );
@@ -75,7 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
+        SnackBar(content: Text('An error has occurred: $e')),
       );
     } finally {
       setState(() {
@@ -86,15 +86,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch userProvider to react to user state changes
-    final userState = ref.watch(userProvider);
-
     if (_isCheckingSession) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
     return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -182,7 +178,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: _isLoading || userState.isLoading ? null : _login,
+                      onPressed: _isLoading ? null : _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red[700],
                         minimumSize: const Size(double.infinity, 60),
@@ -190,7 +186,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: _isLoading || userState.isLoading
+                      child: _isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(
                               "Login",
@@ -255,12 +251,5 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }

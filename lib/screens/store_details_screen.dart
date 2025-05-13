@@ -4,28 +4,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/providers/store_provider.dart';
 import 'package:my_app/widgets/nav&footer/custom_appbar.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:my_app/repositories/following_repository.dart';
 
 class StoreDetailsScreen extends ConsumerWidget {
   final int storeId;
   const StoreDetailsScreen({super.key, required this.storeId});
 
-void _openWhatsApp(String phoneNumber) async {
-    String formattedPhone = phoneNumber.trim().startsWith('0')
-        ? '2$phoneNumber' 
-        : phoneNumber;
+  void _openWhatsApp(String phoneNumber) async {
+    String formattedPhone =
+        phoneNumber.trim().startsWith('0') ? '2$phoneNumber' : phoneNumber;
 
     if (!formattedPhone.startsWith('+')) {
       formattedPhone = '+$formattedPhone';
     }
 
-final whatsappUrl =
+    final whatsappUrl =
         'https://wa.me/$formattedPhone?text=Hello%20from%20the%20Handmade%20app!';
 
     try {
       if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
         await launchUrl(Uri.parse(whatsappUrl));
-      } 
-      else {
+      } else {
         throw 'Could not launch $whatsappUrl';
       }
     } catch (e) {
@@ -53,7 +52,7 @@ final whatsappUrl =
                     image: DecorationImage(
                       image: NetworkImage(
                         storeAsync.value?.vendorImage ??
-                            'https://via.placeholder.com/400x200',
+                            'https://placehold.co/400x200',
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -92,7 +91,7 @@ final whatsappUrl =
                     backgroundColor: Colors.white,
                     backgroundImage: NetworkImage(
                       storeAsync.value?.vendorImage ??
-                          'https://via.placeholder.com/100',
+                          'https://placehold.co/100',
                     ),
                   ),
                 ),
@@ -105,7 +104,7 @@ final whatsappUrl =
               storeAsync.value?.brandName ?? '',
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            
+
             if (storeAsync.value?.status == 'active')
               const Icon(Icons.check_circle, color: Colors.green, size: 20),
             const SizedBox(height: 4),
@@ -121,13 +120,37 @@ final whatsappUrl =
                 width: double.infinity,
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final followingRepository = FollowingRepository();
+
+                    // Call the postFollow method and handle the response
+                    try {
+                      print(storeId);
+                      final response =
+                          await followingRepository.postFollow(storeId);
+                      if (response == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Followed successfully!')),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to follow. Please try again.')),
+                        );
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: $e')),
+                      );
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: const Text('Follow', style: TextStyle(fontSize: 16, color: Colors.white)),
+                  child: const Text('Follow',
+                      style: TextStyle(fontSize: 16, color: Colors.white)),
                 ),
               ),
             ),
@@ -165,8 +188,7 @@ final whatsappUrl =
                           itemCount: products.length,
                           itemBuilder: (context, i) {
                             final p = products[i];
-                            bool isFavorite =
-                                false; 
+                            bool isFavorite = false;
 
                             return InkWell(
                               borderRadius: BorderRadius.circular(12),
@@ -519,8 +541,7 @@ final whatsappUrl =
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                           subtitle: Text(
-                            storeAsync.value?.status?.toUpperCase() ??
-                                'UNKNOWN',
+                            storeAsync.value?.status.toUpperCase() ?? 'UNKNOWN',
                             style: TextStyle(
                               color: (storeAsync.value?.status == 'active')
                                   ? Colors.green

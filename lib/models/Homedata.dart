@@ -1,3 +1,5 @@
+import 'package:my_app/models/Category.dart';
+
 class ApiResponse<T> {
   final bool status;
   final T data;
@@ -57,6 +59,7 @@ class HomeData {
 
 class ProductList {
   final int productId;
+  final int vendor_id;
   final String productName;
   final String productImage;
   final String vendorImage;
@@ -67,6 +70,7 @@ class ProductList {
 
   ProductList({
     this.productId = 0,
+    this.vendor_id = 0,
     this.productName = '',
     this.productImage = '',
     this.vendorImage = '',
@@ -79,6 +83,7 @@ class ProductList {
   factory ProductList.fromJson(Map<String, dynamic> json) {
     return ProductList(
       productId: (json['product_id'] ?? json["id"]) as int,
+      vendor_id: (json['vendor_id'] ?? 0) as int,
       productName: json['product_name'].toString(),
       productImage: json['product_image'].toString(),
       vendorImage: json['vendor_image'].toString(),
@@ -86,36 +91,6 @@ class ProductList {
       discount: json['discount'].toString(),
       brandName: json['brand_name'].toString(),
       rating: (json['rating'] ?? 0).toInt() as int,
-    );
-  }
-}
-
-// category model for home page
-class Category {
-  final int id;
-  final String categoryName;
-  final String description;
-  final String categoryImage;
-  final List<ProductList> products;
-
-  Category({
-    this.id = 0,
-    this.categoryName = '',
-    this.description = '',
-    this.categoryImage = '',
-    this.products = const <ProductList>[],
-  });
-
-  factory Category.fromJson(Map<String, dynamic> json) {
-    var productsJson = json['products'] as List? ?? [];
-    return Category(
-      id: (json['category_id'] ?? json['id']) as int,
-      categoryName: json['category_name'].toString(),
-      description: json['description'].toString(),
-      categoryImage: json['category_image'].toString(),
-      products: productsJson
-          .map((item) => ProductList.fromJson(item as Map<String, dynamic>))
-          .toList(),
     );
   }
 }

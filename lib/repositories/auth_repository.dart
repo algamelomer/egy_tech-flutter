@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/providers/user_provider.dart';
 import 'package:my_app/responses/LoginResponse.dart' as login_response;
 import 'package:my_app/responses/RegisterResponse.dart' as register_response;
-import 'package:my_app/responses/UpdateUserResponse.dart'as update_user_response;
-    
+import 'package:my_app/responses/UpdateUserResponse.dart' as update_user_response;
 import 'package:my_app/services/authService.dart';
 import 'package:my_app/config/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthRepository {
   final AuthService _authService = AuthService();
   final DatabaseService _databaseService = DatabaseService();
+  final Ref _ref;
+
+  AuthRepository(this._ref); // Inject Riverpod's Ref
 
   /// **Login the user and store the token if "Remember Me" is checked**
   Future<login_response.LoginResponse> login(
@@ -24,7 +28,11 @@ class AuthRepository {
       // Save the "Remember Me" preference
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('rememberMe', rememberMe);
+
+      // ✅ Refresh the user provider after successful login
+      await _ref.read(userProvider.notifier).fetchUser();
     }
+
     return response;
   }
 
@@ -39,13 +47,14 @@ class AuthRepository {
     File? image,
   }) async {
     return await _authService.register(
-        name: name,
-        email: email,
-        password: password,
-        gender: gender,
-        image: image,
-        address: address,
-        phone: phone);
+      name: name,
+      email: email,
+      password: password,
+      gender: gender,
+      image: image,
+      address: address,
+      phone: phone,
+    );
   }
 
   /// **Check if a user is logged in**
@@ -72,13 +81,14 @@ class AuthRepository {
     File? image,
   }) async {
     return await _authService.updateuser(
-        name: name,
-        email: email,
-        password: password,
-        gender: gender,
-        image: image,
-        address: address,
-        phone: phone);
+      name: name,
+      email: email,
+      password: password,
+      gender: gender,
+      image: image,
+      address: address,
+      phone: phone,
+    );
   }
 
   /// **Logout the user and remove the token**

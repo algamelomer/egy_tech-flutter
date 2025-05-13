@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/models/Category.dart';
 import 'package:my_app/models/Homedata.dart';
-import 'package:my_app/screens/CategoryScreen.dart';
+import 'package:my_app/screens/CategoryDetails.dart';
 import 'package:my_app/widgets/AdBanner.dart';
 import 'package:my_app/widgets/CardSlider.dart';
 import 'package:my_app/widgets/CustomListView.dart';
@@ -59,12 +60,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       final categoryId =
                           int.tryParse(mappedCategories[index]['id'] ?? '0') ??
                               0;
+                      final categoryName =
+                          mappedCategories[index]['name'] ?? 'Unknown';
                       if (categoryId != 0) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                CategoryScreen(categoryId: categoryId),
+                            builder: (context) => CategoryDetails(
+                                categoryId: categoryId,
+                                categoryName: categoryName),
                           ),
                         );
                       }
@@ -77,24 +81,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const SizedBox(height: 15),
                   const Featured(),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("معرض ابداع وابتكار جامعة برج العرب", style: CustomTextStyle),
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/notfound');
-                          },
-                          icon: const Icon(
-                            size: 24,
-                            Icons.arrow_forward_rounded,
-                            color: Colors.black,
-                          ))
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  CardSlider(Cardlist: mappedPromotedProducts),
-                  const SizedBox(height: 20),
+                
                   // Promoted products
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -102,7 +89,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Text("Promoted products", style: CustomTextStyle),
                       IconButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/notfound');
+                            // final categoryId =
+                            //     int.tryParse(mappedPromotedProducts['id'] ?? '0') ??
+                            //         0;
+                            // final categoryName =
+                            //     mappedPromotedProducts['name'] ?? 'Unknown';
+                            // if (categoryId != 0) {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           CategoryScreen(categoryId: categoryId, categoryName: categoryName),
+                            //     ),
+                            //   );
+                            // }
                           },
                           icon: const Icon(
                             size: 24,
@@ -272,6 +272,7 @@ class HomeDataMapper {
               "product_name": prod.productName,
               "product_image": prod.productImage,
               "vendor_image": prod.vendorImage,
+              "vendor_id": prod.vendor_id.toString(),
               "price": prod.price,
               "discount": prod.discount,
             })
@@ -286,6 +287,7 @@ class HomeDataMapper {
               "product_name": prod.productName,
               "product_image": prod.productImage,
               "vendor_image": prod.vendorImage,
+              "vendor_id": prod.vendor_id.toString(),
               "price": prod.price,
               "discount": prod.discount,
             })
@@ -298,7 +300,7 @@ class HomeDataMapper {
         .map((Category cat) => {
               "name": cat.categoryName,
               "products": cat.products
-                  .map((ProductList prod) => {
+                  .map((prod) => {
                         "product_id": prod.productId.toString(),
                         "product_name": prod.productName,
                         "product_image": prod.productImage,

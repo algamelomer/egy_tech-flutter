@@ -28,4 +28,25 @@ class FollowingRepository {
       throw Exception("Failed to load data (Status: ${response.statusCode})");
     }
   }
+
+  Future<Object> postFollow(int id) async {
+    final token = await DatabaseService().getToken();
+    print(id);
+    final response = await http.post(
+      Uri.parse(_baseUrl + "/follow" + '/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    print(response);
+    if (response.statusCode == 200) {
+      return true;
+    } else if (response.statusCode == 403 || response.statusCode == 405) {
+      return ApiResponse<void>.error(
+          "Access denied (Error ${response.statusCode})");
+    } else {
+      throw Exception("Failed to follow partner (Status: ${response.statusCode})");
+    }
+  }
 }

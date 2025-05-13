@@ -33,4 +33,32 @@ class CategoryService {
       throw Exception('Error fetching category products: $e');
     }
   }
+
+  Future<List<Category>> getCategories() async {
+    final url = '$_baseUrl/category';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        if (json['status'] != true) {
+          throw Exception('Failed to load categories');
+        }
+
+        final List<Category> categories = (json['data'] as List)
+            .map((item) => Category.fromJson(item))
+            .toList();
+        // Print the categories for debugging
+        // print('Categories: $categories');
+        return categories;
+      } else {
+        throw Exception(
+            'HTTP Error: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching categories: $e');
+    }
+  }
 }
+

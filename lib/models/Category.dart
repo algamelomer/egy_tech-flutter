@@ -1,5 +1,36 @@
 // models/Category.dart
 import 'dart:convert';
+import 'package:my_app/models/homedata.dart';
+
+// category model for home page
+class Category {
+  final int id;
+  final String categoryName;
+  final String description;
+  final String categoryImage;
+  final List<ProductList> products;
+
+  Category({
+    this.id = 0,
+    this.categoryName = '',
+    this.description = '',
+    this.categoryImage = '',
+    this.products = const <ProductList>[],
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    var productsJson = json['products'] as List? ?? [];
+    return Category(
+      id: (json['category_id'] ?? json['id']) as int,
+      categoryName: (json['category_name'] ?? json['name']).toString(),
+      description: json['description'].toString(),
+      categoryImage: (json['category_image'] ?? json['image']).toString(),
+      products: productsJson
+          .map((item) => ProductList.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
 
 class CategoryProductsResponse {
   final bool status;

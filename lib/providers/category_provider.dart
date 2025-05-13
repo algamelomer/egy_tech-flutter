@@ -13,3 +13,9 @@ final categoryProductsProvider =
   final repository = ref.watch(categoryRepositoryProvider);
   return repository.getCategoryProducts(categoryId);
 });
+
+
+final categoriesProvider = FutureProvider<List<Category>>((ref) async {
+  final repository = ref.watch(categoryRepositoryProvider);
+  return repository.getCategories();
+});

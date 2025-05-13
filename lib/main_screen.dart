@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/providers/theme_provider.dart';
+import 'package:my_app/screens/CategoryScreen.dart';
 import 'package:my_app/screens/Following.dart';
 import 'package:my_app/screens/MyProfile.dart';
 import 'package:my_app/screens/studio_screen.dart';
@@ -25,7 +26,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   final List<Widget> _pages = [
 
     const HomeScreen(),
-    const Placeholder(),
+    const CategoryScreen(),
     const StudioScreen(),
     const CollaborateScreen(),
     const MyProfile(),
